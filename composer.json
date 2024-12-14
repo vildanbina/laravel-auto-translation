@@ -1,0 +1,48 @@
+{
+    "name": "vildanbina/laravel-auto-translation",
+    "description": "A Laravel package for managing model drafts.",
+    "keywords": [
+        "laravel",
+        "versioning",
+        "drafts",
+        "models"
+    ],
+    "license": "MIT",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Vildan Bina",
+            "email": "vildanbina@gmail.com",
+            "homepage": "https://www.vildanbina.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "laravel/framework": "^9.0|^10.0|^11.0",
+        "illuminate/support": "^9.0|^10.0|^11.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "VildanBina\\LaravelAutoTranslation\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "VildanBina\\LaravelAutoTranslation\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "VildanBina\\LaravelAutoTranslation\\AutoTranslationsServiceProvider"
+            ],
+            "aliases": {
+                "LaravelAutoTranslation": "VildanBina\\LaravelAutoTranslation\\Facades\\LaravelAutoTranslation"
+            }
+        }
+    }
+}
