@@ -1,11 +1,12 @@
 {
     "name": "vildanbina/laravel-auto-translation",
-    "description": "A Laravel package for managing model drafts.",
+    "description": "A Laravel package for automating the translation of language files.",
     "keywords": [
         "laravel",
-        "versioning",
-        "drafts",
-        "models"
+        "translations",
+        "localization",
+        "language files",
+        "automation"
     ],
     "license": "MIT",
     "version": "1.0.0",
