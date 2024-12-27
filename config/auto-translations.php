@@ -52,10 +52,10 @@ return [
     'drivers' => [
 
         'chatgpt' => [
-            'api_key'     => env('CHATGPT_API_KEY'),
-            'model'       => env('CHATGPT_MODEL', 'gpt-3.5-turbo'),
+            'api_key' => env('CHATGPT_API_KEY'),
+            'model' => env('CHATGPT_MODEL', 'gpt-3.5-turbo'),
             'temperature' => env('CHATGPT_TEMPERATURE', 0.7),
-            'max_tokens'  => env('CHATGPT_MAX_TOKENS', 1000),
+            'max_tokens' => env('CHATGPT_MAX_TOKENS', 1000),
         ],
 
         'google' => [
@@ -66,6 +66,10 @@ return [
             'api_key' => env('DEEPL_API_KEY'),
             'api_url' => env('DEEPL_API_URL', 'https://api-free.deepl.com/v2/translate'),
         ],
-
+        'my_custom_driver' => [
+            'class' => App\Drivers\MyCustomDriver::class,
+            'api_key' => env('MY_CUSTOM_API_KEY'),
+            // ...
+        ],
     ],
 ];

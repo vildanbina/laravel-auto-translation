@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace VildanBina\LaravelAutoTranslation\Tests;
 
 use Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\AutoTranslationsServiceProvider;
 
-final class DefaultTest extends TestCase
+class DefaultTest extends TestCase
 {
     public function test_service_provider_loaded(): void
     {
@@ -20,9 +18,9 @@ final class DefaultTest extends TestCase
         $this->assertNotNull($config, 'Configuration file is not published.');
         $this->assertArrayHasKey('default_driver', $config);
     }
+
     protected function getPackageProviders($app)
     {
         return [AutoTranslationsServiceProvider::class];
     }
-
 }

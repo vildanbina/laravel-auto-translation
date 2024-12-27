@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace VildanBina\LaravelAutoTranslation;
 
 use Illuminate\Support\ServiceProvider;
 use VildanBina\LaravelAutoTranslation\Commands\ScanTextCommand;
 use VildanBina\LaravelAutoTranslation\Commands\TranslateCommand;
 
-final class AutoTranslationsServiceProvider extends ServiceProvider
+class AutoTranslationsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {

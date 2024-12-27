@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace VildanBina\LaravelAutoTranslation\Tests\Unit;
 
 use Exception;
@@ -9,7 +7,7 @@ use Mockery;
 use Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\TranslationsManager;
 
-final class DirectoryScanningTest extends TestCase
+class DirectoryScanningTest extends TestCase
 {
     public function test_scan_text_command_executes_successfully(): void
     {

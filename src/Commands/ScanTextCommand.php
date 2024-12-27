@@ -1,18 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace VildanBina\LaravelAutoTranslation\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
 use VildanBina\LaravelAutoTranslation\TranslationsManager;
 
-final class ScanTextCommand extends Command
+class ScanTextCommand extends Command
 {
     protected $signature = 'translate:scan
                             {--lang= : Source language code (defaults to config value)}';
-
     protected $description = 'Scan language files in lang_path and prepare strings for translation';
 
     public function handle(TranslationsManager $manager): void

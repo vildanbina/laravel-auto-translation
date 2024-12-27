@@ -7,7 +7,13 @@
 
 ## Introduction
 
-**Laravel Auto Translation** is a robust package designed to simplify and streamline the localization of your Laravel application. By automating the translation of your language files, this package ensures a more efficient workflow. Key features include support for multiple drivers (ChatGPT, Google Translate, and DeepL) and compatibility with both JSON and PHP language files. Two main commands, `translate:scan` and `translate:default`, enable seamless scanning and translating of language strings.
+**Laravel Auto Translation** is a robust package designed to simplify and streamline the localization of your Laravel
+application. By automating the translation of your language files, this package ensures a more efficient workflow. Key
+features include:
+
+1. **Multiple Drivers**: ChatGPT, Google Translate, and DeepL.
+2. **JSON & PHP Language File Support**: Scans both JSON and nested PHP files.
+3. **Placeholder Preservation**: Automatically protects placeholders like `:attribute` or `:seconds` from being altered.
 
 ## Requirements
 
@@ -30,7 +36,9 @@ php artisan vendor:publish --provider="VildanBina\LaravelAutoTranslation\AutoTra
 
 ## Configuration
 
-The configuration file is located at `config/auto-translations.php`. Below is an example of its default settings. Customize these settings to suit your application, such as specifying the default driver or changing the source language.
+The configuration file is located at `config/auto-translations.php`. Below is an example of its default settings.
+Customize these settings to suit your application, such as specifying the default driver or changing the source
+language:
 
 ~~~php
 <?php
@@ -49,15 +57,19 @@ return [
             'temperature' => env('CHATGPT_TEMPERATURE', 0.7),
             'max_tokens'  => env('CHATGPT_MAX_TOKENS', 1000),
         ],
-
         'google' => [
             'api_key' => env('GOOGLE_API_KEY'),
         ],
-
         'deepl' => [
             'api_key' => env('DEEPL_API_KEY'),
             'api_url' => env('DEEPL_API_URL', 'https://api-free.deepl.com/v2/translate'),
         ],
+
+        // Example of a custom driver registration:
+        // 'my_custom_driver' => [
+        //     'class'   => \App\Drivers\MyCustomDriver::class,
+        //     'api_key' => env('MY_CUSTOM_API_KEY'),
+        // ],
     ],
 ];
 ~~~
@@ -82,73 +94,83 @@ DEEPL_API_KEY=your-deepl-api-key
 
 ### 1. `translate:scan`
 
-This command scans all PHP files located within the `lang/` folder (including nested directories), extracting translatable strings and saving them in a JSON file (`lang/texts_to_translate.json`). This file serves as the base for subsequent translations.
+This command scans all PHP files located within the `lang/` folder (including nested directories), extracting
+translatable strings and saving them in a JSON file (`lang/texts_to_translate.json`). This file serves as the base for
+subsequent translations.
 
-#### Signature:
-
-| Command           | Description                                                |
-|-------------------|------------------------------------------------------------|
-| `translate:scan`  | Extracts translatable strings from PHP files in `lang/` and saves them in `texts_to_translate.json`. |
-
-**Options**:
-- `--lang=`: (Optional) Source language code. Defaults to the value in the configuration file.
-
-#### Usage:
+**Usage**:
 
 ~~~bash
 php artisan translate:scan --lang=en
 ~~~
 
-#### Example Output:
-- Extracted strings are stored in `lang/texts_to_translate.json`.
-
 ### 2. `translate:default`
 
-This command translates the strings defined in `texts_to_translate.json` into a specified target language using the chosen translation driver.
+This command translates the strings defined in `texts_to_translate.json` into a specified target language using the
+chosen translation driver. It also preserves Laravel placeholders from being translated.
 
-#### Signature:
-
-| Command              | Description                                                                             |
-|----------------------|-----------------------------------------------------------------------------------------|
-| `translate:default`  | Translates strings from `texts_to_translate.json` into the specified target language.   |
-
-**Arguments**:
-- `target_lang`: Target language code.
-
-**Options**:
-- `--source_lang=`: (Optional) Source language code. Defaults to the value in the configuration file.
-- `--driver=`: (Optional) Translation driver to use. Defaults to the value in the configuration file.
-- `--overwrite`: (Optional) Overwrite existing translations if they already exist.
-
-#### Usage:
+**Usage**:
 
 ~~~bash
 php artisan translate:default fr --driver=deepl --overwrite
 ~~~
 
-#### Example Output:
-- Translations are stored in respective language files, e.g., `lang/fr.json`.
+- `target_lang` (Argument) – The target language code (e.g., `fr`).
+- `--source_lang` (Optional) – Source language code; defaults to config value.
+- `--driver` (Optional) – Translation driver; defaults to config value.
+- `--overwrite` (Optional) – Whether to overwrite existing translations.
+
+## Custom Drivers
+
+To add a custom driver, follow these steps:
+
+1. **Implement the `TranslationDriver` interface**:
+   ~~~php
+   use VildanBina\LaravelAutoTranslation\Contracts\TranslationDriver;
+
+   class MyCustomDriver implements TranslationDriver
+   {
+       public function __construct(private array $config)
+       {
+       }
+
+       public function translate(array $texts, string $sourceLang, string $targetLang): array
+       {
+           // Your custom logic...
+           return $texts;
+       }
+   }
+   ~~~
+2. **Register the driver in `auto-translations.php`**:
+   ~~~php
+   'drivers' => [
+       'my_custom_driver' => [
+           'class'   => \App\Drivers\MyCustomDriver::class,
+           'api_key' => env('MY_CUSTOM_API_KEY'),
+           // additional config...
+       ],
+   ],
+   ~~~
+
+3. **Use it in translations**:
+   ~~~bash
+   php artisan translate:default fr --driver=my_custom_driver
+   ~~~
 
 ## Supported Drivers
 
-The package supports:
 - **ChatGPT**: Flexible and context-aware translations.
-- **Google Translate API**: Fast and reliable.
-- **DeepL API**: Known for accurate translations, especially for European languages.
-
-## To Do
-
-- Add support for creating custom translation drivers. For example, contributors could implement drivers that use alternative translation APIs, integrate with offline translation tools, or support specific regional dialects.
-- Enhance error handling for failed API calls.
-- Provide additional options for partial translations in complex projects.
+- **Google Translate**: Fast and reliable.
+- **DeepL**: Known for accurate translations, especially for European languages.
+- **[New] Custom Driver**: Extendable for your own APIs or offline services.
 
 ## Contributing
 
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
+See [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
-Please e-mail vildanbina@gmail.com to report any security vulnerabilities instead of the issue tracker.
+Please e-mail vildanbina@gmail.com to report any security vulnerabilities instead of using the issue tracker.
 
 ## Credits
 

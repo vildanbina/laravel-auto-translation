@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace VildanBina\LaravelAutoTranslation\Tests\Unit;
 
 use Exception;
@@ -9,7 +7,7 @@ use Mockery;
 use Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\TranslationsManager;
 
-final class TranslateCommandTest extends TestCase
+class TranslateCommandTest extends TestCase
 {
     public function test_translate_command_executes_successfully(): void
     {
@@ -22,9 +20,9 @@ final class TranslateCommandTest extends TestCase
         $this->app->instance(TranslationsManager::class, $manager);
 
         $this->artisan('translate:default', [
-            'target_lang'  => 'es',
+            'target_lang' => 'es',
             '--source_lang' => 'en',
-            '--driver'      => 'google',
+            '--driver' => 'google',
         ])->expectsOutput("Translation to 'es' using 'google' driver completed and saved.")
             ->assertExitCode(0);
     }

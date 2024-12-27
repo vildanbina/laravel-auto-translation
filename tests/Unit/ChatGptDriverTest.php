@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace VildanBina\LaravelAutoTranslation\Tests\Unit;
 
 use Exception;
@@ -9,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\Drivers\ChatGPTDriver;
 
-final class ChatGptDriverTest extends TestCase
+class ChatGptDriverTest extends TestCase
 {
     public function test_chatgpt_driver_translates_texts(): void
     {
@@ -25,9 +23,7 @@ final class ChatGptDriverTest extends TestCase
             ]),
         ]);
 
-        $driver = new ChatGPTDriver([
-            'api_key' => 'test-key',
-        ]);
+        $driver = new ChatGPTDriver(['api_key' => 'test-key']);
 
         $result = $driver->translate(['hello' => 'Hello', 'bye' => 'Goodbye'], 'en', 'es');
 
