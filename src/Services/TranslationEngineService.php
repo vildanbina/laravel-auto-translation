@@ -8,7 +8,7 @@ use VildanBina\LaravelAutoTranslation\Drivers\ChatGPTDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\DeepLDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\GoogleTranslateDriver;
 
-class TranslationService
+class TranslationEngineService
 {
     private $drivers = [];
 
