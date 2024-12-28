@@ -4,7 +4,7 @@ namespace VildanBina\LaravelAutoTranslation\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
-use VildanBina\LaravelAutoTranslation\TranslationsManager;
+use VildanBina\LaravelAutoTranslation\TranslationWorkflowService;
 
 class ScanTextCommand extends Command
 {
@@ -12,7 +12,7 @@ class ScanTextCommand extends Command
                             {--lang= : Source language code (defaults to config value)}';
     protected $description = 'Scan language files in lang_path and prepare strings for translation';
 
-    public function handle(TranslationsManager $manager): void
+    public function handle(TranslationWorkflowService $manager): void
     {
         try {
             $sourceLang = $this->option('lang') ?: config('auto-translations.source_language');
