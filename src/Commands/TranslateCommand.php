@@ -4,7 +4,7 @@ namespace VildanBina\LaravelAutoTranslation\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
-use VildanBina\LaravelAutoTranslation\TranslationsManager;
+use VildanBina\LaravelAutoTranslation\TranslationWorkflowService;
 
 class TranslateCommand extends Command
 {
@@ -15,7 +15,7 @@ class TranslateCommand extends Command
                             {--overwrite : Overwrite existing translations}';
     protected $description = 'Translate language strings to another language using a specified driver.';
 
-    public function handle(TranslationsManager $manager): void
+    public function handle(TranslationWorkflowService $manager): void
     {
         $targetLang = $this->argument('target_lang');
         $sourceLang = $this->option('source_lang') ?: config('auto-translations.source_language');

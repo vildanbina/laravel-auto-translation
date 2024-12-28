@@ -5,15 +5,15 @@ namespace VildanBina\LaravelAutoTranslation;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
-use VildanBina\LaravelAutoTranslation\Services\TranslationService;
+use VildanBina\LaravelAutoTranslation\Services\TranslationEngineService;
 
-class TranslationsManager
+class TranslationWorkflowService
 {
     protected array $inMemoryTexts;
 
-    protected TranslationService $service;
+    protected TranslationEngineService $service;
 
-    public function __construct(TranslationService $service)
+    public function __construct(TranslationEngineService $service)
     {
         $this->service = $service;
     }

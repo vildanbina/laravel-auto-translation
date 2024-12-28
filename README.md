@@ -120,6 +120,35 @@ php artisan translate:default fr --driver=deepl --overwrite
 - `--driver` (Optional) – Translation driver; defaults to config value.
 - `--overwrite` (Optional) – Whether to overwrite existing translations.
 
+### 3. Using In-Memory Texts (If Applicable)
+
+In addition to scanning and translating language files, you can programmatically set texts directly in memory. This is useful for scenarios where you want to translate specific texts without relying on language files.
+
+**Example:**
+
+~~~php
+use VildanBina\LaravelAutoTranslation\TranslationWorkflowService;
+use VildanBina\LaravelAutoTranslation\Services\TranslationEngineService;
+
+// Assume $translationEngineService is an instance of TranslationEngineService
+$translationWorkflowService = new TranslationWorkflowService($translationEngineService);
+
+// Define texts to translate
+$texts = [
+    'welcome.message' => 'Welcome to our application!',
+    'user.greeting' => 'Hello, :name!',
+];
+
+// Set texts in memory
+$translationWorkflowService->setInMemoryTexts($texts);
+
+// Perform translation
+$translatedTexts = $translationWorkflowService->translate('en', 'fr', 'deepl');
+
+// Output translated texts
+print_r($translatedTexts);
+~~~
+
 ## Custom Drivers
 
 To add a custom driver, follow these steps:
@@ -141,6 +170,7 @@ To add a custom driver, follow these steps:
        }
    }
    ~~~
+
 2. **Register the driver in `auto-translations.php`**:
    ~~~php
    'drivers' => [
@@ -162,7 +192,7 @@ To add a custom driver, follow these steps:
 - **ChatGPT**: Flexible and context-aware translations.
 - **Google Translate**: Fast and reliable.
 - **DeepL**: Known for accurate translations, especially for European languages.
-- **[New] Custom Driver**: Extendable for your own APIs or offline services.
+- **Custom Driver**: Extendable for your own APIs or offline services.
 
 ## Contributing
 
@@ -180,4 +210,3 @@ Please e-mail vildanbina@gmail.com to report any security vulnerabilities instea
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
