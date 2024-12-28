@@ -3,31 +3,64 @@
 namespace VildanBina\LaravelAutoTranslation;
 
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use VildanBina\LaravelAutoTranslation\Services\TranslationService;
 
 class TranslationsManager
 {
-    private $service;
+    protected array $inMemoryTexts;
+
+    protected TranslationService $service;
 
     public function __construct(TranslationService $service)
     {
         $this->service = $service;
     }
 
+    public function setInMemoryTexts(array $texts): static
+    {
+        $this->inMemoryTexts = $texts;
+
+        return $this;
+    }
+
     public function scanLanguageFiles(string $lang): void
     {
-        $texts = $this->loadLanguageStrings($lang);
+        $texts = $this->loadLanguageFiles($lang);
         $this->storeTextsForTranslation($texts);
     }
 
-    public function translate(string $sourceLang, string $targetLang, string $driver, bool $overwrite = false): void
+    /**
+     * Translates the loaded texts from source language to target language.
+     *
+     * @param  string  $sourceLang  The source language code.
+     * @param  string  $targetLang  The target language code.
+     * @param  string  $driver  The translation driver to use.
+     * @param  bool  $overwrite  Whether to overwrite existing translations.
+     * @return array Returns translated texts.
+     *
+     * @throws Exception If translation files are missing or invalid.
+     */
+    public function translate(string $sourceLang, string $targetLang, string $driver, bool $overwrite = false): array
     {
-        $texts = $this->loadTextsForTranslation();
-        $translatedTexts = $this->service->translate($texts, $sourceLang, $targetLang, $driver);
-        $this->storeTranslations($translatedTexts, $targetLang, $overwrite);
+        $texts = $this->loadTexts();
+        $translated = $this->service->translate($texts, $sourceLang, $targetLang, $driver);
+
+        if (isset($this->inMemoryTexts)) {
+            return $translated;
+        }
+
+        $this->saveTranslated($translated, $targetLang, $overwrite);
+
+        return $translated;
     }
 
+    /**
+     * Stores the gathered texts to a JSON file for translation.
+     *
+     * @param  array  $texts  The array of texts to store.
+     */
     private function storeTextsForTranslation(array $texts): void
     {
         $langPath = config('auto-translations.lang_path');
@@ -36,48 +69,61 @@ class TranslationsManager
         File::put($filePath, json_encode($texts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 
-    private function loadTextsForTranslation(): array
+    /**
+     * Loads texts either from in-memory storage or from the translation file.
+     *
+     * @return array The array of texts to be translated.
+     *
+     * @throws Exception If the translation file does not exist or has invalid format.
+     */
+    private function loadTexts(): array
     {
-        $langPath = config('auto-translations.lang_path');
-        $filePath = "{$langPath}/texts_to_translate.json";
-
-        if (!File::exists($filePath)) {
-            throw new Exception("Texts to translate not found. Please run 'translate:scan' first.");
+        if (isset($this->inMemoryTexts)) {
+            return $this->inMemoryTexts;
         }
 
-        $texts = json_decode(File::get($filePath), true);
-        if (!is_array($texts)) {
+        $file = config('auto-translations.lang_path').'/texts_to_translate.json';
+        if (! File::exists($file)) {
+            throw new Exception("No texts found. Run 'translate:scan' first.");
+        }
+
+        $contents = json_decode(File::get($file), true);
+        if (! is_array($contents)) {
             throw new Exception("Invalid format in 'texts_to_translate.json'.");
         }
 
-        return $texts;
+        return $contents;
     }
 
-    private function loadLanguageStrings(string $lang): array
+    /**
+     * Loads all language strings from JSON and PHP language files.
+     *
+     * @param  string  $lang  The language code to load.
+     * @return array The array of loaded language strings.
+     */
+    private function loadLanguageFiles(string $lang): array
     {
-        $langPath = config('auto-translations.lang_path');
+        $dir = config('auto-translations.lang_path');
         $texts = [];
 
-        // Load JSON language file
-        $jsonFile = "{$langPath}/{$lang}.json";
+        $jsonFile = "{$dir}/{$lang}.json";
         if (File::exists($jsonFile)) {
-            $jsonStrings = json_decode(File::get($jsonFile), true);
-            if (is_array($jsonStrings)) {
-                $texts = array_merge($texts, $jsonStrings);
+            $jsonData = json_decode(File::get($jsonFile), true);
+            if (is_array($jsonData)) {
+                $texts = array_merge($texts, $jsonData);
             }
         }
 
-        // Load PHP language files in subdirectories
-        $langDir = "{$langPath}/{$lang}";
+        $langDir = "{$dir}/{$lang}";
         if (File::isDirectory($langDir)) {
-            $files = File::allFiles($langDir);
-            foreach ($files as $file) {
+            foreach (File::allFiles($langDir) as $file) {
                 if ($file->getExtension() === 'php') {
-                    $relativePath = $file->getRelativePathname();
-                    $key = str_replace(['/', '.php'], ['.', ''], $relativePath);
+                    $subKey = str_replace(['/', '.php'], ['.', ''], $file->getRelativePathname());
                     $array = include $file->getPathname();
                     if (is_array($array)) {
-                        $this->flattenArray($array, $key, $texts);
+                        $flattened = Arr::dot([$subKey => $array]);
+                        $texts = array_merge($texts, $flattened);
+
                     }
                 }
             }
@@ -86,32 +132,26 @@ class TranslationsManager
         return $texts;
     }
 
-    private function flattenArray(array $array, string $parentKey, array &$result): void
+    /**
+     * Saves the translated texts to the target language file.
+     *
+     * @param  array  $translated  The array of translated texts.
+     * @param  string  $lang  The target language code.
+     * @param  bool  $overwrite  Whether to overwrite existing translations.
+     */
+    private function saveTranslated(array $translated, string $lang, bool $overwrite): void
     {
-        foreach ($array as $key => $value) {
-            $fullKey = $parentKey . '.' . $key;
-            if (is_array($value)) {
-                $this->flattenArray($value, $fullKey, $result);
-            } else {
-                $result[$fullKey] = $value;
-            }
-        }
-    }
-
-    private function storeTranslations(array $translatedTexts, string $lang, bool $overwrite): void
-    {
-        $langPath = config('auto-translations.lang_path');
-        $filePath = "{$langPath}/{$lang}.json";
+        $file = config('auto-translations.lang_path')."/{$lang}.json";
         $existing = [];
 
-        if (File::exists($filePath)) {
-            $existing = json_decode(File::get($filePath), true) ?: [];
+        if (File::exists($file)) {
+            $existing = json_decode(File::get($file), true) ?: [];
         }
 
-        if (!$overwrite) {
-            $translatedTexts = array_merge($existing, $translatedTexts);
+        if (! $overwrite) {
+            $translated = array_merge($existing, $translated);
         }
 
-        File::put($filePath, json_encode($translatedTexts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        File::put($file, json_encode($translated, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 }
