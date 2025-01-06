@@ -55,7 +55,8 @@ return [
             'api_key' => env('CHATGPT_API_KEY'),
             'model' => env('CHATGPT_MODEL', 'gpt-3.5-turbo'),
             'temperature' => env('CHATGPT_TEMPERATURE', 0.7),
-            'max_tokens' => env('CHATGPT_MAX_TOKENS', 1000),
+            'max_tokens' => env('CHATGPT_MAX_TOKENS', 4096),
+            'http_timeout' => env('CHATGPT_HTTP_TIMEOUT', 300),
         ],
 
         'google' => [
