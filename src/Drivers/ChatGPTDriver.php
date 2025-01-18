@@ -5,6 +5,7 @@ namespace VildanBina\LaravelAutoTranslation\Drivers;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Throwable;
 use TikToken\Encoder;
 use VildanBina\LaravelAutoTranslation\Contracts\TranslationDriver;
 
@@ -34,7 +35,11 @@ class ChatGPTDriver implements TranslationDriver
         // Calculate the chunk size, ensuring additional buffer space by adding
         // 50% of the average tokens per text. This adjustment helps prevent
         // exceeding the token limit in the output.
-        return ceil(count($texts) / ($tokensPerText + ($tokensPerText / 2)));
+        try {
+            return ceil(count($texts) / ($tokensPerText + ($tokensPerText / 2)));
+        } catch (Throwable $throwable) {
+            return 1;
+        }
     }
 
     public function translate(array $texts, string $sourceLang, string $targetLang): array
