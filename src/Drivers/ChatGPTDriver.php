@@ -51,12 +51,12 @@ class ChatGPTDriver implements TranslationDriver
             ->chunk($this->getChunkSize($texts, $sourceLang, $targetLang))
             ->each(function (Collection $value) use (&$translations, $sourceLang, $targetLang) {
                 $chunkResult = $this->sendTranslationRequest($value->toArray(), $sourceLang, $targetLang);
-                $translations = array_merge($translations, $chunkResult);
+                $translations += is_array($chunkResult) ? $chunkResult : [];
             });
 
         if (! empty($currentChunk)) {
             $chunkResult = $this->sendTranslationRequest($currentChunk, $sourceLang, $targetLang);
-            $translations = array_merge($translations, $chunkResult);
+            $translations += is_array($chunkResult) ? $chunkResult : [];
         }
 
         return $translations;
