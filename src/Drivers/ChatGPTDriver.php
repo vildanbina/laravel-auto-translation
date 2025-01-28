@@ -3,7 +3,6 @@
 namespace VildanBina\LaravelAutoTranslation\Drivers;
 
 use Exception;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Throwable;
 use TikToken\Encoder;
@@ -11,6 +10,8 @@ use VildanBina\LaravelAutoTranslation\Contracts\TranslationDriver;
 
 class ChatGPTDriver implements TranslationDriver
 {
+    private const BUFFER_FACTOR = 2;
+
     private array $config;
 
     private Encoder $encoder;
@@ -21,24 +22,14 @@ class ChatGPTDriver implements TranslationDriver
         $this->encoder = new Encoder;
     }
 
-    protected function getChunkSize(array $texts, string $sourceLang, string $targetLang): float
+    private function estimateTokens(array $data, string $sourceLang, string $targetLang): int
     {
-        $prompt = $this->buildPrompt($texts, $sourceLang, $targetLang);
-
-        // Encode the prompt and calculate its length in tokens
-        $encodedLength = count($this->encoder->encode(json_encode($prompt)));
-        $maxTokens = $this->config['max_tokens'] ?? 1000;
-
-        // Calculate the number of tokens each text contributes on average
-        $tokensPerText = (int) round($encodedLength / $maxTokens);
-
-        // Calculate the chunk size, ensuring additional buffer space by adding
-        // 50% of the average tokens per text. This adjustment helps prevent
-        // exceeding the token limit in the output.
         try {
-            return ceil(count($texts) / ($tokensPerText + ($tokensPerText / 2)));
-        } catch (Throwable $throwable) {
-            return 1;
+            return count($this->encoder->encode(
+                json_encode($this->buildPrompt($data, $sourceLang, $targetLang))
+            ));
+        } catch (Throwable) {
+            return PHP_INT_MAX;
         }
     }
 
@@ -46,11 +37,11 @@ class ChatGPTDriver implements TranslationDriver
     {
         $translations = [];
         $currentChunk = [];
+        $chunks = $this->makeChunks($texts, $sourceLang, $targetLang);
 
-        collect($texts)
-            ->chunk($this->getChunkSize($texts, $sourceLang, $targetLang))
-            ->each(function (Collection $value) use (&$translations, $sourceLang, $targetLang) {
-                $chunkResult = $this->sendTranslationRequest($value->toArray(), $sourceLang, $targetLang);
+        collect($chunks)
+            ->each(function (array $value) use (&$translations, $sourceLang, $targetLang) {
+                $chunkResult = $this->sendTranslationRequest($value, $sourceLang, $targetLang);
                 $translations += is_array($chunkResult) ? $chunkResult : [];
             });
 
@@ -60,6 +51,32 @@ class ChatGPTDriver implements TranslationDriver
         }
 
         return $translations;
+    }
+
+    private function makeChunks(array $texts, string $sourceLang, string $targetLang): array
+    {
+        $maxTokens = $this->config['max_tokens'] ?? 1000;
+        $usable = (int) floor($maxTokens / self::BUFFER_FACTOR);
+        $chunks = [];
+        $current = [];
+
+        foreach ($texts as $key => $text) {
+            $test = $current + [$key => $text];
+            if ($this->estimateTokens($test, $sourceLang, $targetLang) > $usable) {
+                if ($current) {
+                    $chunks[] = $current;
+                }
+                $current = [$key => $text];
+            } else {
+                $current[$key] = $text;
+            }
+        }
+
+        if ($current) {
+            $chunks[] = $current;
+        }
+
+        return $chunks;
     }
 
     protected function buildPrompt(array $chunk, string $sourceLang, string $targetLang): array
