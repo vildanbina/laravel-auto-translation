@@ -29,7 +29,7 @@ class TranslationEngineService
         }
 
         $driverClass = $this->resolveDriverClass($driverName);
-        if (!$driverClass) {
+        if (! $driverClass) {
             throw new Exception("Driver [{$driverName}] not supported.");
         }
 
@@ -82,6 +82,10 @@ class TranslationEngineService
     private function restorePlaceholders(array $translated, array $placeholderMap): array
     {
         foreach ($translated as $key => $text) {
+            if (is_array($text)) {
+                continue;
+            }
+
             foreach ($placeholderMap as $token => $original) {
                 if (str_contains($text, $token)) {
                     $text = str_replace($token, $original, $text);
