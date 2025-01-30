@@ -65,7 +65,8 @@ class TranslationEngineService
             $index = 0;
             // Updated pattern to include underscores, hyphens, digits, etc.
             $maskedTexts[$key] = preg_replace_callback('/(:[A-Za-z0-9_\-]+)/', function ($match) use (&$index, $key, &$placeholderMap) {
-                $token = "%%PLACEHOLDER_{$key}_{$index}%%";
+                $hash = hash('sha1', $key);
+                $token = "%%HOLDER_{$hash}_{$index}%%";
                 $placeholderMap[$token] = $match[0];
                 $index++;
 
