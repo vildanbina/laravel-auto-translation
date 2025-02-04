@@ -45,6 +45,9 @@ class TranslationWorkflowService
     public function translate(string $sourceLang, string $targetLang, string $driver, bool $overwrite = false): array
     {
         $texts = $this->loadTexts();
+        if (! $overwrite) {
+            $texts = $this->compareTranslations($texts, $targetLang);
+        }
         $translated = $this->service->translate($texts, $sourceLang, $targetLang, $driver);
 
         if (isset($this->inMemoryTexts)) {
@@ -153,5 +156,29 @@ class TranslationWorkflowService
         }
 
         File::put($file, json_encode($translated, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    }
+
+    /**
+     * Compare previously translated file and remove from texts to be translated.
+     *
+     * @param  array  $texts  The array of texts to be translated.
+     * @param  string  $lang  The target language code.
+     *
+     * @return array The array of texts to be translated.
+     */
+    private function compareTranslations(array $texts, string $lang): array
+    {
+        $file = config('auto-translations.lang_path')."/{$lang}.json";
+
+        if (!File::exists($file)) {
+            return $texts;
+        }
+
+        $existing = json_decode(File::get($file), true) ?: [];
+        foreach (array_keys($existing) as $key) {
+            unset($texts[$key]);
+        }
+
+        return $texts;
     }
 }
