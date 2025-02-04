@@ -63,11 +63,11 @@ class TranslationEngineService
 
         foreach ($texts as $key => $text) {
             $index = 0;
-            // Updated pattern to include underscores, hyphens, digits, etc.
+            // Hashed array for quicker reference
             $maskedTexts[$key] = preg_replace_callback('/(:[A-Za-z0-9_\-]+)/', function ($match) use (&$index, $key, &$placeholderMap) {
-                $hash = hash('sha1', $key);
-                $token = "%%HOLDER_{$hash}_{$index}%%";
-                $placeholderMap[$token] = $match[0];
+                $hashKey = hash('xxh64', $key) . hash('xxh32', $key);
+                $token = hash('xxh64', $match[0]) . hash('xxh32', $match[0]);
+                $placeholderMap[$hashKey][$token] = $match[0];
                 $index++;
 
                 return $token;
@@ -82,19 +82,27 @@ class TranslationEngineService
      */
     private function restorePlaceholders(array $translated, array $placeholderMap): array
     {
+        $warnings = [];
         foreach ($translated as $key => $text) {
             if (is_array($text)) {
                 continue;
             }
 
-            foreach ($placeholderMap as $token => $original) {
+            // Use hashed key for quicker replacements
+            $hashKey = hash('xxh64', $key) . hash('xxh32', $key);
+            foreach (($placeholderMap[$hashKey]??[]) as $token => $original) {
                 if (str_contains($text, $token)) {
                     $text = str_replace($token, $original, $text);
                 }
             }
             $translated[$key] = $text;
+
+            // Possible placeholder unresolved
+            if(preg_match('/[a-z0-9]{24}/', $text)) {
+                $warnings[] = "Possible placeholder issue on '$key' string";
+            }
         }
 
-        return $translated;
+        return [$translated, $warnings];
     }
 }

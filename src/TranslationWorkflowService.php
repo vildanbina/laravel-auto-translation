@@ -48,7 +48,11 @@ class TranslationWorkflowService
         if (! $overwrite) {
             $texts = $this->compareTranslations($texts, $targetLang);
         }
-        $translated = $this->service->translate($texts, $sourceLang, $targetLang, $driver);
+        if (empty($texts)) {
+            return [0,[]];
+        }
+
+        [$translated, $warnings] = $this->service->translate($texts, $sourceLang, $targetLang, $driver);
 
         if (isset($this->inMemoryTexts)) {
             return $translated;
@@ -56,7 +60,7 @@ class TranslationWorkflowService
 
         $this->saveTranslated($translated, $targetLang, $overwrite);
 
-        return $translated;
+        return [count($translated), $warnings];
     }
 
     /**
