@@ -23,8 +23,16 @@ class TranslateCommand extends Command
         $overwrite = $this->option('overwrite');
 
         try {
-            $manager->translate($sourceLang, $targetLang, $driver, $overwrite);
-            $this->info("Translation to '{$targetLang}' using '{$driver}' driver completed and saved.");
+            [$translationCount, $warnings] = $manager->translate($sourceLang, $targetLang, $driver, $overwrite);
+            if ($translationCount <= 0) {
+                $this->info('No translations needed.');
+            } else {
+                $this->info("Translation to '{$targetLang}' using '{$driver}' driver completed and saved.");
+                $this->info("{$translationCount} strings translated.");
+            }
+            foreach ($warnings as $warning) {
+                $this->warn($warning);
+            }
         } catch (Exception $e) {
             $this->error('An error occurred during translation: ' . $e->getMessage());
         }
