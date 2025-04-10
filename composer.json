@@ -21,8 +21,8 @@
     "require": {
         "php": ">=8.0",
         "mehrab-wj/tiktoken-php": "^1.0",
-        "laravel/framework": "^9.0|^10.0|^11.0",
-        "illuminate/support": "^9.0|^10.0|^11.0"
+        "laravel/framework": "^9.0|^10.0|^11.0|^12.0",
+        "illuminate/support": "^9.0|^10.0|^11.0|^12.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
