@@ -28,7 +28,7 @@ class TranslationWorkflowService
     public function scanLanguageFiles(string $lang): void
     {
         $texts = $this->loadLanguageFiles($lang);
-        $this->storeTextsForTranslation($texts);
+        $this->storeTextsForTranslation($texts, $lang);
     }
 
     /**
@@ -44,7 +44,7 @@ class TranslationWorkflowService
      */
     public function translate(string $sourceLang, string $targetLang, string $driver, bool $overwrite = false): array
     {
-        $texts = $this->loadTexts();
+        $texts = $this->loadTexts($sourceLang);
         if (! $overwrite) {
             $texts = $this->compareTranslations($texts, $targetLang);
         }
@@ -68,10 +68,10 @@ class TranslationWorkflowService
      *
      * @param  array  $texts  The array of texts to store.
      */
-    private function storeTextsForTranslation(array $texts): void
+    private function storeTextsForTranslation(array $texts, string $lang): void
     {
         $langPath = config('auto-translations.lang_path');
-        $filePath = "{$langPath}/texts_to_translate.json";
+        $filePath = "{$langPath}/{$lang}.json";
         ksort($texts);
         File::put($filePath, json_encode($texts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
@@ -83,20 +83,20 @@ class TranslationWorkflowService
      *
      * @throws Exception If the translation file does not exist or has invalid format.
      */
-    private function loadTexts(): array
+    private function loadTexts(string $sourceLang): array
     {
         if (isset($this->inMemoryTexts)) {
             return $this->inMemoryTexts;
         }
 
-        $file = config('auto-translations.lang_path').'/texts_to_translate.json';
+        $file = config('auto-translations.lang_path')."/${$sourceLang}.json";
         if (! File::exists($file)) {
             throw new Exception("No texts found. Run 'translate:scan' first.");
         }
 
         $contents = json_decode(File::get($file), true);
         if (! is_array($contents)) {
-            throw new Exception("Invalid format in 'texts_to_translate.json'.");
+            throw new Exception("Invalid format in '${$sourceLang}.json'.");
         }
 
         return $contents;
