@@ -12,7 +12,7 @@ application. By automating the translation of your language files, this package 
 features include:
 
 1. **Multiple Drivers**: ChatGPT, Google Translate, and DeepL.
-2. **JSON & PHP Language File Support**: Scans both JSON and nested PHP files.
+2. **PHP Language File Support**: Scans nested PHP files.
 3. **Placeholder Preservation**: Automatically protects placeholders like `:attribute` or `:seconds` from being altered.
 
 ## Requirements
