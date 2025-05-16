@@ -96,7 +96,7 @@ DEEPL_API_KEY=your-deepl-api-key
 ### 1. `translate:scan`
 
 This command scans all PHP files located within the `lang/` folder (including nested directories), extracting
-translatable strings and saving them in a JSON file (`lang/texts_to_translate.json`). This file serves as the base for
+translatable strings and saving them in a JSON file (`lang/{source_lang}.json`). This file serves as the base for
 subsequent translations.
 
 **Usage**:
@@ -107,7 +107,7 @@ php artisan translate:scan --lang=en
 
 ### 2. `translate:default`
 
-This command translates the strings defined in `texts_to_translate.json` into a specified target language using the
+This command translates the strings defined in `{source_lang}.json` into a specified target language using the
 chosen translation driver. It also preserves Laravel placeholders from being translated.
 
 **Usage**:
