@@ -8,7 +8,7 @@ use Throwable;
 use TikToken\Encoder;
 use VildanBina\LaravelAutoTranslation\Contracts\TranslationDriver;
 
-class ChatGPTDriver implements TranslationDriver
+class OpenAIDriver implements TranslationDriver
 {
     private const BUFFER_FACTOR = 2;
 
@@ -120,18 +120,18 @@ EOL
             ]);
 
         if (! $response->successful()) {
-            throw new Exception('ChatGPT API error: '.$response->json()['error']['message']);
+            throw new Exception('OpenAI API error: '.$response->json()['error']['message']);
         }
 
         $content = $response->json()['choices'][0]['message']['content'] ?? '';
         if (! json_validate($content)) {
-            throw new Exception('Invalid JSON returned by ChatGPT: '.json_last_error_msg());
+            throw new Exception('Invalid JSON returned by OpenAI: '.json_last_error_msg());
         }
 
         $decoded = json_decode($content, true);
 
         if (count($decoded) !== count($texts)) {
-            throw new Exception('Mismatch in number of translated texts returned by ChatGPT.');
+            throw new Exception('Mismatch in number of translated texts returned by OpenAI.');
         }
 
         return array_combine(array_keys($texts), $decoded);
