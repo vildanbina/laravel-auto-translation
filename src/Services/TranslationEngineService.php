@@ -4,7 +4,7 @@ namespace VildanBina\LaravelAutoTranslation\Services;
 
 use Exception;
 use VildanBina\LaravelAutoTranslation\Contracts\TranslationDriver;
-use VildanBina\LaravelAutoTranslation\Drivers\ChatGPTDriver;
+use VildanBina\LaravelAutoTranslation\Drivers\OpenAIDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\DeepLDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\GoogleTranslateDriver;
 
@@ -41,7 +41,7 @@ class TranslationEngineService
     private function resolveDriverClass(string $driverName): ?string
     {
         $drivers = [
-            'chatgpt' => ChatGPTDriver::class,
+            'openai' => OpenAIDriver::class,
             'google' => GoogleTranslateDriver::class,
             'deepl' => DeepLDriver::class,
         ];

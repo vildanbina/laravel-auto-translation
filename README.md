@@ -11,7 +11,7 @@
 application. By automating the translation of your language files, this package ensures a more efficient workflow. Key
 features include:
 
-1. **Multiple Drivers**: ChatGPT, Google Translate, and DeepL.
+1. **Multiple Drivers**: OpenAI, Google Translate, and DeepL.
 2. **JSON & PHP Language File Support**: Scans both JSON and nested PHP files.
 3. **Placeholder Preservation**: Automatically protects placeholders like `:attribute` or `:seconds` from being altered.
 
@@ -46,17 +46,17 @@ language:
 return [
     'lang_path' => lang_path(),
 
-    'default_driver' => env('TRANSLATION_DEFAULT_DRIVER', 'chatgpt'),
+    'default_driver' => env('TRANSLATION_DEFAULT_DRIVER', 'openai'),
 
     'source_language' => env('TRANSLATION_SOURCE_LANGUAGE', 'en'),
 
     'drivers' => [
-        'chatgpt' => [
-            'api_key'     => env('CHATGPT_API_KEY'),
-            'model'       => env('CHATGPT_MODEL', 'gpt-3.5-turbo'),
-            'temperature' => env('CHATGPT_TEMPERATURE', 0.7),
-            'max_tokens'  => env('CHATGPT_MAX_TOKENS', 1000),
-            'http_timeout' => env('CHATGPT_HTTP_TIMEOUT', 30),
+        'openai' => [
+            'api_key'     => env('OPENAI_API_KEY'),
+            'model'       => env('OPENAI_MODEL', 'gpt-3.5-turbo'),
+            'temperature' => env('OPENAI_TEMPERATURE', 0.7),
+            'max_tokens'  => env('OPENAI_MAX_TOKENS', 1000),
+            'http_timeout' => env('OPENAI_HTTP_TIMEOUT', 30),
         ],
         'google' => [
             'api_key' => env('GOOGLE_API_KEY'),
@@ -79,14 +79,14 @@ return [
 
 Add the required API keys to your `.env` file. Obtain these keys from the respective service providers:
 
-- **ChatGPT**: Visit [OpenAI API documentation](https://platform.openai.com/docs/) to generate an API key.
+- **OpenAI**: Visit [OpenAI API documentation](https://platform.openai.com/docs/) to generate an API key.
 - **Google Translate**: Obtain an API key from the [Google Cloud Console](https://console.cloud.google.com/).
 - **DeepL**: Generate your API key from the [DeepL Pro Account](https://www.deepl.com/pro.html).
 
 ~~~env
-TRANSLATION_DEFAULT_DRIVER=chatgpt
+TRANSLATION_DEFAULT_DRIVER=openai
 TRANSLATION_SOURCE_LANGUAGE=en
-CHATGPT_API_KEY=your-chatgpt-api-key
+OPENAI_API_KEY=your-openai-api-key
 GOOGLE_API_KEY=your-google-api-key
 DEEPL_API_KEY=your-deepl-api-key
 ~~~
@@ -190,7 +190,7 @@ To add a custom driver, follow these steps:
 
 ## Supported Drivers
 
-- **ChatGPT**: Flexible and context-aware translations.
+- **OpenAI**: Flexible and context-aware translations.
 - **Google Translate**: Fast and reliable.
 - **DeepL**: Known for accurate translations, especially for European languages.
 - **Custom Driver**: Extendable for your own APIs or offline services.
