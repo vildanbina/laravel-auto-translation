@@ -2,7 +2,7 @@
 
 namespace VildanBina\LaravelAutoTranslation\Tests;
 
-use Tests\TestCase;
+use VildanBina\LaravelAutoTranslation\Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\AutoTranslationsServiceProvider;
 
 class DefaultTest extends TestCase

@@ -3,7 +3,7 @@
 namespace VildanBina\LaravelAutoTranslation\Tests\Unit;
 
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use VildanBina\LaravelAutoTranslation\Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\Drivers\DeepLDriver;
 
 class DeeplDriverTest extends TestCase

@@ -4,7 +4,7 @@ namespace VildanBina\LaravelAutoTranslation\Tests\Unit;
 
 use Exception;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use VildanBina\LaravelAutoTranslation\Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\Drivers\OpenAIDriver;
 
 class OpenAIDriverTest extends TestCase
@@ -16,7 +16,7 @@ class OpenAIDriverTest extends TestCase
                 'choices' => [
                     [
                         'message' => [
-                            'content' => "Hola\nAdiós",
+                            'content' => json_encode(['hello' => 'Hola', 'bye' => 'Adiós']),
                         ],
                     ],
                 ],
