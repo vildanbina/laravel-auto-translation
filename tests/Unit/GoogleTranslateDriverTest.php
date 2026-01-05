@@ -4,7 +4,7 @@ namespace VildanBina\LaravelAutoTranslation\Tests\Unit;
 
 use Exception;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use VildanBina\LaravelAutoTranslation\Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\Drivers\GoogleTranslateDriver;
 
 class GoogleTranslateDriverTest extends TestCase

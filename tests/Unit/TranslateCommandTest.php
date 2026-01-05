@@ -4,7 +4,7 @@ namespace VildanBina\LaravelAutoTranslation\Tests\Unit;
 
 use Exception;
 use Mockery;
-use Tests\TestCase;
+use VildanBina\LaravelAutoTranslation\Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\TranslationWorkflowService;
 
 class TranslateCommandTest extends TestCase
@@ -15,7 +15,7 @@ class TranslateCommandTest extends TestCase
         $manager->shouldReceive('translate')
             ->once()
             ->with('en', 'es', 'google', false)
-            ->andReturnTrue();
+            ->andReturn([1,[]]);
 
         $this->app->instance(TranslationWorkflowService::class, $manager);
 

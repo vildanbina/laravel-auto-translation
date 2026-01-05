@@ -4,7 +4,7 @@ namespace VildanBina\LaravelAutoTranslation\Tests\Unit;
 
 use Exception;
 use Mockery;
-use Tests\TestCase;
+use VildanBina\LaravelAutoTranslation\Tests\TestCase;
 use VildanBina\LaravelAutoTranslation\TranslationWorkflowService;
 
 class DirectoryScanningTest extends TestCase
