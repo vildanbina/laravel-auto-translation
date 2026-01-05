@@ -67,6 +67,16 @@ return [
             'api_key' => env('DEEPL_API_KEY'),
             'api_url' => env('DEEPL_API_URL', 'https://api-free.deepl.com/v2/translate'),
         ],
+
+        'deepseek' => [
+            'api_key'      => env('DEEPSEEK_API_KEY'),
+            'api_url'      => env('DEEPSEEK_API_URL', 'https://api.deepseek.com'),
+            'model'        => env('DEEPSEEK_MODEL', 'deepseek-chat'),
+            'max_tokens'   => (int) env('DEEPSEEK_MAX_TOKENS', 2000),
+            'temperature'  => (float) env('DEEPSEEK_TEMPERATURE', 0),
+            'http_timeout' => (int) env('DEEPSEEK_HTTP_TIMEOUT', 60),
+        ],
+
         'my_custom_driver' => [
             'class' => App\Drivers\MyCustomDriver::class,
             'api_key' => env('MY_CUSTOM_API_KEY'),

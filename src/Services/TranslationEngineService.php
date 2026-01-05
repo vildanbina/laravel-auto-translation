@@ -6,6 +6,7 @@ use Exception;
 use VildanBina\LaravelAutoTranslation\Contracts\TranslationDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\OpenAIDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\DeepLDriver;
+use VildanBina\LaravelAutoTranslation\Drivers\DeepSeekDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\GoogleTranslateDriver;
 
 class TranslationEngineService
@@ -44,6 +45,7 @@ class TranslationEngineService
             'openai' => OpenAIDriver::class,
             'google' => GoogleTranslateDriver::class,
             'deepl' => DeepLDriver::class,
+            'deepseek' => DeepSeekDriver::class,
         ];
 
         // If user has defined a "class" inside config for a custom driver, pick it up
