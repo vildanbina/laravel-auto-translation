@@ -11,7 +11,7 @@
 application. By automating the translation of your language files, this package ensures a more efficient workflow. Key
 features include:
 
-1. **Multiple Drivers**: OpenAI, Google Translate, and DeepL.
+1. **Multiple Drivers**: OpenAI, DeepSeek, Google Translate, and DeepL.
 2. **JSON & PHP Language File Support**: Scans both JSON and nested PHP files.
 3. **Placeholder Preservation**: Automatically protects placeholders like `:attribute` or `:seconds` from being altered.
 
@@ -65,6 +65,14 @@ return [
             'api_key' => env('DEEPL_API_KEY'),
             'api_url' => env('DEEPL_API_URL', 'https://api-free.deepl.com/v2/translate'),
         ],
+        'deepseek' => [
+            'api_key'      => env('DEEPSEEK_API_KEY'),
+            'api_url'      => env('DEEPSEEK_API_URL', '[https://api.deepseek.com](https://api.deepseek.com)'),
+            'model'        => env('DEEPSEEK_MODEL', 'deepseek-chat'),
+            'temperature'  => env('DEEPSEEK_TEMPERATURE', 0),
+            'max_tokens'   => env('DEEPSEEK_MAX_TOKENS', 2000),
+            'http_timeout' => env('DEEPSEEK_HTTP_TIMEOUT', 60),
+        ],
 
         // Example of a custom driver registration:
         // 'my_custom_driver' => [
@@ -80,6 +88,7 @@ return [
 Add the required API keys to your `.env` file. Obtain these keys from the respective service providers:
 
 - **OpenAI**: Visit [OpenAI API documentation](https://platform.openai.com/docs/) to generate an API key.
+- **DeepSeek**: Obtain an API key from the [DeepSeek Platform](https://platform.deepseek.com/).
 - **Google Translate**: Obtain an API key from the [Google Cloud Console](https://console.cloud.google.com/).
 - **DeepL**: Generate your API key from the [DeepL Pro Account](https://www.deepl.com/pro.html).
 
@@ -87,6 +96,7 @@ Add the required API keys to your `.env` file. Obtain these keys from the respec
 TRANSLATION_DEFAULT_DRIVER=openai
 TRANSLATION_SOURCE_LANGUAGE=en
 OPENAI_API_KEY=your-openai-api-key
+DEEPSEEK_API_KEY=your-deepseek-api-key
 GOOGLE_API_KEY=your-google-api-key
 DEEPL_API_KEY=your-deepl-api-key
 ~~~
@@ -191,6 +201,7 @@ To add a custom driver, follow these steps:
 ## Supported Drivers
 
 - **OpenAI**: Flexible and context-aware translations.
+- **DeepSeek**: High-performance and cost-effective OpenAI-compatible API.
 - **Google Translate**: Fast and reliable.
 - **DeepL**: Known for accurate translations, especially for European languages.
 - **Custom Driver**: Extendable for your own APIs or offline services.
