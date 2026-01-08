@@ -77,6 +77,14 @@ return [
             'http_timeout' => (int) env('DEEPSEEK_HTTP_TIMEOUT', 60),
         ],
 
+        'ollama' => [
+            'api_url' => env('OLLAMA_API_URL', 'http://localhost:11434/v1'),
+            'model' => env('OLLAMA_MODEL', 'llama3'),
+            'max_tokens' => env('OLLAMA_MAX_TOKENS', 2048),
+            'temperature' => 0,
+            'http_timeout' => 60,
+        ],
+        
         'my_custom_driver' => [
             'class' => App\Drivers\MyCustomDriver::class,
             'api_key' => env('MY_CUSTOM_API_KEY'),

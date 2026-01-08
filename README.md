@@ -11,7 +11,7 @@
 application. By automating the translation of your language files, this package ensures a more efficient workflow. Key
 features include:
 
-1. **Multiple Drivers**: OpenAI, DeepSeek, Google Translate, and DeepL.
+1. **Multiple Drivers**: OpenAI, DeepSeek, Google Translate, and DeepL, and **Ollama (Local AI)**.
 2. **JSON & PHP Language File Support**: Scans both JSON and nested PHP files.
 3. **Placeholder Preservation**: Automatically protects placeholders like `:attribute` or `:seconds` from being altered.
 
@@ -67,11 +67,18 @@ return [
         ],
         'deepseek' => [
             'api_key'      => env('DEEPSEEK_API_KEY'),
-            'api_url'      => env('DEEPSEEK_API_URL', '[https://api.deepseek.com](https://api.deepseek.com)'),
+            'api_url'      => env('DEEPSEEK_API_URL', 'https://api.deepseek.com'),
             'model'        => env('DEEPSEEK_MODEL', 'deepseek-chat'),
             'temperature'  => env('DEEPSEEK_TEMPERATURE', 0),
             'max_tokens'   => env('DEEPSEEK_MAX_TOKENS', 2000),
             'http_timeout' => env('DEEPSEEK_HTTP_TIMEOUT', 60),
+        ],
+        'ollama' => [
+            'api_url'      => env('OLLAMA_API_URL', 'http://localhost:11434/v1'),
+            'model'        => env('OLLAMA_MODEL', 'llama3'),
+            'max_tokens'   => env('OLLAMA_MAX_TOKENS', 2048),
+            'temperature'  => 0,
+            'http_timeout' => 60,
         ],
 
         // Example of a custom driver registration:
@@ -91,15 +98,40 @@ Add the required API keys to your `.env` file. Obtain these keys from the respec
 - **DeepSeek**: Obtain an API key from the [DeepSeek Platform](https://platform.deepseek.com/).
 - **Google Translate**: Obtain an API key from the [Google Cloud Console](https://console.cloud.google.com/).
 - **DeepL**: Generate your API key from the [DeepL Pro Account](https://www.deepl.com/pro.html).
+- **Ollama (Local AI)**: No API key required. Install [Ollama](https://ollama.com/) and pull a model of your choice.
+  
+  **Commonly used models:**
+  * `ollama pull llama3` (Meta)
+  * `ollama pull deepseek-r1` (DeepSeek)
+  * `ollama pull gemma3` (Google)
+  * `ollama pull qwen2.5` (Alibaba)
+  
+  > [!TIP]
+  > You can explore the full list of available models at the [Ollama Model Library](https://ollama.com/library).
+  
+> [!TIP]
+> **Docker/Sail Users:** If running Laravel in a container, set `OLLAMA_API_URL=http://host.docker.internal:11434/v1` to allow the container to reach the Ollama service running on your host machine.
 
-~~~env
-TRANSLATION_DEFAULT_DRIVER=openai
+```env
+# --- Global Settings ---
+TRANSLATION_DEFAULT_DRIVER=ollama
 TRANSLATION_SOURCE_LANGUAGE=en
+
+# --- Ollama (Local AI) Settings ---
+OLLAMA_MODEL=llama3
+OLLAMA_API_URL=http://localhost:11434/v1
+
+# --- OpenAI Settings ---
 OPENAI_API_KEY=your-openai-api-key
+
+# --- DeepSeek Settings ---
 DEEPSEEK_API_KEY=your-deepseek-api-key
+
+# --- Google & DeepL Settings ---
 GOOGLE_API_KEY=your-google-api-key
 DEEPL_API_KEY=your-deepl-api-key
-~~~
+
+```
 
 ## Commands
 
@@ -202,6 +234,7 @@ To add a custom driver, follow these steps:
 
 - **OpenAI**: Flexible and context-aware translations.
 - **DeepSeek**: High-performance and cost-effective OpenAI-compatible API.
+- **Ollama**: **Free and Private.** Run models like Llama 3 or DeepSeek-R1 locally on your own hardware.
 - **Google Translate**: Fast and reliable.
 - **DeepL**: Known for accurate translations, especially for European languages.
 - **Custom Driver**: Extendable for your own APIs or offline services.

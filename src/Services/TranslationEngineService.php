@@ -8,6 +8,7 @@ use VildanBina\LaravelAutoTranslation\Drivers\OpenAIDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\DeepLDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\DeepSeekDriver;
 use VildanBina\LaravelAutoTranslation\Drivers\GoogleTranslateDriver;
+use VildanBina\LaravelAutoTranslation\Drivers\OllamaDriver;
 
 class TranslationEngineService
 {
@@ -46,6 +47,7 @@ class TranslationEngineService
             'google' => GoogleTranslateDriver::class,
             'deepl' => DeepLDriver::class,
             'deepseek' => DeepSeekDriver::class,
+            'ollama' => OllamaDriver::class,
         ];
 
         // If user has defined a "class" inside config for a custom driver, pick it up
