@@ -27,8 +27,7 @@ class OllamaDriverTest extends TestCase
         $this->driver = new OllamaDriver($this->config);
     }
 
-    /** @test */
-    public function it_can_successfully_translate_texts()
+    public function test_it_can_successfully_translate_texts(): void
     {
         $texts = [
             'welcome' => 'Welcome to our application',
@@ -59,8 +58,7 @@ class OllamaDriverTest extends TestCase
         $this->assertCount(2, $result);
     }
 
-    /** @test */
-    public function it_throws_exception_on_api_error()
+    public function test_it_throws_exception_on_api_error(): void
     {
         Http::fake([
             'http://localhost:11434/v1/chat/completions' => Http::response(['error' => ['message' => 'Model not found']], 500)
@@ -72,8 +70,7 @@ class OllamaDriverTest extends TestCase
         $this->driver->translate(['hello' => 'Hello'], 'en', 'es');
     }
 
-    /** @test */
-    public function it_throws_exception_on_invalid_json_response()
+    public function test_it_throws_exception_on_invalid_json_response(): void
     {
         Http::fake([
             'http://localhost:11434/v1/chat/completions' => Http::response([
@@ -87,8 +84,7 @@ class OllamaDriverTest extends TestCase
         $this->driver->translate(['hello' => 'Hello'], 'en', 'es');
     }
 
-    /** @test */
-    public function it_handles_chunking_when_exceeding_token_limit()
+    public function test_it_handles_chunking_when_exceeding_token_limit(): void
     {
         // Setup a small max_tokens to force chunking
         $config = array_merge($this->config, ['max_tokens' => 50]);
@@ -114,8 +110,7 @@ class OllamaDriverTest extends TestCase
         Http::assertSentCount(2);
     }
 
-    /** @test */
-    public function it_throws_exception_on_mismatched_response_count()
+    public function test_it_throws_exception_on_mismatched_response_count(): void
     {
         Http::fake([
             'http://localhost:11434/v1/chat/completions' => Http::response([

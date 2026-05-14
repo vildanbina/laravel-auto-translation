@@ -15,7 +15,8 @@ class GoogleTranslateDriverTest extends TestCase
             'https://translation.googleapis.com/language/translate/v2' => Http::response([
                 'data' => [
                     'translations' => [
-                        ['translatedText' => "Hola\nAdiós"],
+                        ['translatedText' => 'Hola'],
+                        ['translatedText' => 'Adiós'],
                     ],
                 ],
             ]),

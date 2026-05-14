@@ -18,7 +18,7 @@ features include:
 ## Requirements
 
 - PHP >= 8.0
-- Laravel 9.x, 10.x, 11.x or 12.x
+- Laravel 9.x, 10.x, 11.x, 12.x, or 13.x
 
 ## Installation
 
