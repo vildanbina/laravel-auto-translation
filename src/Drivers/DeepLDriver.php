@@ -22,13 +22,16 @@ class DeepLDriver implements TranslationDriver
 
         $joinedTexts = implode("\n", array_values($texts));
         $formParams = [
-            'auth_key' => $apiKey,
             'text' => $joinedTexts,
             'source_lang' => mb_strtoupper($sourceLang),
             'target_lang' => mb_strtoupper($targetLang),
         ];
 
-        $response = Http::asForm()->post($apiUrl, $formParams);
+        $headers = [
+            'Authorization' => "DeepL-Auth-Key " . $apiKey,
+        ];
+
+        $response = Http::asForm()->withHeaders($headers)->post($apiUrl, $formParams);
         if (!$response->successful()) {
             $error = $response->json()['message'] ?? $response->body();
             throw new Exception('DeepL API error: ' . $error);
